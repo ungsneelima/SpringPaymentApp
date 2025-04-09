@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
 <html>
@@ -41,10 +42,10 @@
 <div class="box">
     <h2>Are you sure you want to delete your account, ${user.userName}?</h2>
     
-    <form action="deleteAccount" method="post" style="display:inline;">
-        <input type="hidden" name="userId" value="${user.userId}" />
-        <button type="submit" class="btn yes">Yes, Delete</button>
-    </form>
+   <form action="confirmDelete" method="get">
+    <input type="hidden" name="userId" value="${user.userId}" />
+    <button class="delete-button" type="submit">Delete Account</button>
+</form>
 
     <form action="profile" method="get" style="display:inline;">
         <button type="submit" class="btn no">Cancel</button>
