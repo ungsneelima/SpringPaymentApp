@@ -72,12 +72,12 @@ public class HomeController {
        return "redirect:/profile";
    }
    
-   @GetMapping("/confirmDelete")
+ /*  @GetMapping("/confirmDelete")
    public String confirmDelete(@RequestParam("userId") Integer userId, Model model) {
        UserEntity user = serv.getUserById(userId);
        model.addAttribute("user", user);
        return "login"; // JSP page name
-   }
+   }*/
 
    /*@PostMapping("/deleteAccount")
    public String deleteAccount(@RequestParam("userId") Integer userId, HttpSession session) {
@@ -89,17 +89,24 @@ public class HomeController {
        return "redirect:/profile?error=missingUserId";
    }*/
    
+   @GetMapping("/confirmDelete")
+   public String confirmDelete(HttpSession session, Model model) {
+       UserEntity user = (UserEntity) session.getAttribute("loggedInUser");
+       if (user == null) {
+           return "redirect:/login";
+       }
+       model.addAttribute("user", user);
+       return "confirmDelete"; // JSP page for confirmation
+   }
+
+   
    @PostMapping("/deleteAccount")
    public String deleteAccount(@RequestParam("userId") Integer userId, HttpSession session) {
        serv.deleteUserById(userId);
        session.invalidate();
-       //return "redirect:/login?accountDeleted=true";
-       return "confirmDelete";
+       return "redirect:/login?accountDeleted=true";
+       //return "confirmDelete";
    }
-
-
-   
-   
 
     @GetMapping("/transactions")
     public String transactionsPage() {
