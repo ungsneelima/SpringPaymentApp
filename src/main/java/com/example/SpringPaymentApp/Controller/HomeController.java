@@ -107,17 +107,25 @@ public class HomeController {
        return "redirect:/login?accountDeleted=true";
        //return "confirmDelete";
    }
+   
+   
+   @GetMapping("/sendMoney")
+   public String sendMoneyPage() {
+       return "sendMoney";  // Renders statement.jsp
+   }
+   
+   @GetMapping("/addMoney")
+   public String addMoneyPage() {
+       return "addMoney";  // Renders statement.jsp
+   }
 
-    @GetMapping("/transactions")
+
+    @GetMapping("/viewTransactions")
     public String transactionsPage() {
-        return "transactions";  // Renders transactions.jsp
+        return "viewTransactions";  // Renders transactions.jsp
     }
 
-    @GetMapping("/bankStatement")
-    public String statementPage() {
-        return "bankStatement";  // Renders statement.jsp
-    }
-
+   
     @GetMapping("/logout")
     public String logoutPage() {
         return "logout";  // Renders logout.jsp

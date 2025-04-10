@@ -104,6 +104,7 @@
         <input type="hidden" name="userId" value="${user.userId}" />
         <button class="delete-button" type="submit">Delete Account</button>
     </form>
+    <a href="index">Back to Home</a>
 </div>
 
 </div>

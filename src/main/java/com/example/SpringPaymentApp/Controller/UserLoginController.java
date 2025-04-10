@@ -41,6 +41,7 @@ public class UserLoginController {
         if (result) {
             UserEntity user = service.getUserByUserName(userName);
             session.setAttribute("loggedInUser", user);  // store in session
+            session.setAttribute("profileid", user.getUserId());
             return "index";  // forward to index.jsp
         } else {
             model.addAttribute("error", "Invalid credentials");
