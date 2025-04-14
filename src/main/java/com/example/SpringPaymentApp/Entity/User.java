@@ -1,32 +1,32 @@
 package com.example.SpringPaymentApp.Entity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 @Entity
-@Table
-public class UserEntity {
-	@Id
-	@Column
-	private int userId;
-	private String userName;
-
-	private String password;
-	private String confirmPassword;
-	private String firstName;
-	private String lastName;
-	private String email;
-	private long phoneNum;
-	private String dob;
-	private String address;
-	
+public class User
+{
+    @Id
+    private int userId;
+    
 	public int getUserId() {
 		return userId;
 	}
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
+	private String userName;
+	private String password;
+	private String confirmPassword;
+	private String firstName;
+	private String lastName;
+	private String email;
+	private String phoneNum;
+	private String dob;
+	private String address;
 	public String getUserName() {
 		return userName;
 	}
@@ -63,10 +63,10 @@ public class UserEntity {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public long getPhoneNum() {
+	public String getPhoneNum() {
 		return phoneNum;
 	}
-	public void setPhoneNum(long phoneNum) {
+	public void setPhoneNum(String phoneNum) {
 		this.phoneNum = phoneNum;
 	}
 	public String getDob() {
@@ -82,5 +82,8 @@ public class UserEntity {
 		this.address = address;
 	}
 	
+	
+	
+
 	
 }

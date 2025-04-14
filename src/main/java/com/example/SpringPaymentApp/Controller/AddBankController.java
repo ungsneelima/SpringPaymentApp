@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.ui.Model;
 
-import com.example.SpringPaymentApp.Entity.BankAccountsEntity;
+import com.example.SpringPaymentApp.Entity.BankAccounts;
 import com.example.SpringPaymentApp.Service.BankService;
 
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +16,26 @@ public class AddBankController {
 
     @Autowired
     BankService bankService;
+    
+    @GetMapping("/addBankAccount")
+	public String addBankAccount(HttpSession session,BankAccounts bankAccounts)
+	{
+		int id=(int) session.getAttribute("profileid");
+		
+		bankAccounts.setUserId(id);
+		bankAccounts.setWalletAmount(0);
+		bankAccounts.setBalanceAmount(10000);
+		bankService.addBankAccount(bankAccounts);
+		
+		return "index";
+	}
+	
+	
+	@GetMapping("/sendmoneypage")
+	public String sendmoneypage()
+	{
+		return "sendmoney";
+	}
 
     /*@GetMapping("/addBankAccount")
     public String addBankAccount(HttpSession session, BankAccountsEntity bankAccounts, Model model) {
@@ -36,7 +56,7 @@ public class AddBankController {
         // Redirect to the index page (or any other page you want after account addition)
         return "index";*/
     
-    @PostMapping("/addBankAccount")
+   /* @PostMapping("/addBankAccount")
     public String addBankAccount(HttpSession session, BankAccountsEntity bankAccounts, Model model) {
         Integer userId = (Integer) session.getAttribute("profileid");
 
@@ -54,6 +74,9 @@ public class AddBankController {
         model.addAttribute("successMessage", "Account added successfully");
 
         return "index";
-    }
+    
+    }*/
+    
+    
 
     }

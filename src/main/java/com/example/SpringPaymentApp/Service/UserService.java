@@ -3,44 +3,50 @@ package com.example.SpringPaymentApp.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.SpringPaymentApp.Entity.UserEntity;
+import com.example.SpringPaymentApp.Entity.User;
 import com.example.SpringPaymentApp.Repository.UserRepository;
+
 
 @Service
 public class UserService {
+	
 	@Autowired
 	UserRepository userRepo;
 	
-	public boolean login(String username, String password) {
-		boolean found=false;
-		found=userRepo.existsByUserNameAndPassword(username,password);
-		return found;
-	}
-	
-	public UserEntity getProfile() 
+	public boolean login(String userName,String password)
 	{
-		UserEntity user = userRepo.findById(1).orElse(null);
-	    System.out.println("Fetched user: " + user);
-	    return user;
+		boolean found=false;
+		found=userRepo.existsByUserNameAndPassword(userName,password);
+		return found;
 		
 	}
 
-	public UserEntity getUserByUserName(String userName) {
-		
-		return userRepo.findByUserName(userName);
+	public User getProfile(int userId) 
+	{
+		User user=null;
+		user=userRepo.findByUserId(userId);
+		return user;
+		//user=userRepo.getProfile();
+	}
 
+	public int update(int userId, String username, String firstname, String lastname, String email, int phno, String dob, String address) {
+		
+		return userRepo.updateByUserId(userId,username,firstname,lastname,email,phno,dob,address);
 	}
-	public void updateUser(UserEntity user) {
-	    userRepo.save(user); // JPA will update if ID exists
+
+	public int  getid(String userName, String password) {
+		// TODO Auto-generated method stub
+		 User user=userRepo.findByUserNameAndPassword(userName,password);
+		 
+		 return user.getUserId();
 	}
+
+	public int deleteProfile(int userId) {
+		return userRepo.deleteByUserId(userId); //built in
+	}
+
 	
-	 public void deleteUserById(int id) {
-	        userRepo.deleteById(id);
-	    }
 
-	    public UserEntity getUserById(int id) {
-	        return userRepo.findById(id).orElse(null);
+	
 
-
-	    }
 }

@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
 @Entity
-public class BankAccountsEntity {
+public class BankAccounts {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,19 +18,39 @@ public class BankAccountsEntity {
     private String bankName;
     private String branchLocation;
     private boolean isActive;
+    private double balanceAmount;
+    private double walletAmount;
 
-    public BankAccountsEntity(int userId, String accountNumber, String ifscCode, String bankName, String branchLocation,
-			boolean isActive) {
-		//super();
-		this.userId = userId;
-		this.accountNumber = accountNumber;
-		this.ifscCode = ifscCode;
-		this.bankName = bankName;
-		this.branchLocation = branchLocation;
-		this.isActive = isActive;
+    public double getBalanceAmount() {
+		return balanceAmount;
 	}
 
-	public BankAccountsEntity() {
+	public void setBalanceAmount(double balanceAmount) {
+		this.balanceAmount = balanceAmount;
+	}
+
+	public double getWalletAmount() {
+		return walletAmount;
+	}
+
+	public void setWalletAmount(double walletAmount) {
+		this.walletAmount = walletAmount;
+	}
+
+	public BankAccounts(int userId, String accountNumber, String ifscCode, String bankName, String branchLocation,
+			boolean isActive,double balanceAmount,double walletAmount) {
+		super();
+		this.userId = userId;
+		this.accountNumber = accountNumber;
+		this.bankName = bankName;
+		this.ifscCode = ifscCode;
+		this.branchLocation = branchLocation;
+		this.isActive = isActive;
+		this.balanceAmount=balanceAmount;
+		this.walletAmount=walletAmount;
+	}
+
+	public BankAccounts() {
         // Default constructor required by JPA
     }
 
