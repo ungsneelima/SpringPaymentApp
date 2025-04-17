@@ -1,5 +1,6 @@
 package com.example.SpringPaymentApp.Controller;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -10,10 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.SpringPaymentApp.Service.BankService;
 import com.example.SpringPaymentApp.Entity.BankAccounts;
 import com.example.SpringPaymentApp.Entity.Transactions;
+import com.example.SpringPaymentApp.Service.BankService;
 import com.example.SpringPaymentApp.Service.TransactionsService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MakeTransactionController 
@@ -24,103 +27,125 @@ public class MakeTransactionController
 	@Autowired
 	BankService serv;
 	
+
+	
+	
 	@GetMapping("/sendmoney")
-	public String sendMoney(Transactions tansactions)
+	public String sendMoney(Transactions tansactions,HttpSession session,Model model)
 	{
 		int sourceId=tansactions.getSourceId();
 		int targetId=tansactions.getTargetId();
-
-		BankAccounts sourceaccount=serv.getAccount(String.valueOf(sourceId));  // sender account
-		BankAccounts targetaccount=serv.getAccount(String.valueOf(targetId));  // receiver account
-		double trasactionAmount=tansactions.getTransactionAmount();				// transaction amount
-		String sType=tansactions.getSourceType();								// sending type
-		String tType=tansactions.getTargetType();  //to type
-		if(sType.equals("bank"))
+		// we  need to check wheter reciever account exists or not
+		BankAccounts found=new BankAccounts();
+		found=serv.getAccount(String.valueOf(targetId)); 
+		if(found==null)
 		{
-			if(trasactionAmount>sourceaccount.getBalanceAmount())
-			{
-				return "sendmoney";
-			}
-			else
-			{
-				if(tType.equals("bank"))
-				{
-					double balance=trasactionAmount+targetaccount.getBalanceAmount();
-					serv.updatebalance(tansactions.getTargetId(),balance);
-					balance=sourceaccount.getBalanceAmount()-trasactionAmount;
-					serv.updatebalance(tansactions.getSourceId(),balance);
-					
-					
-				}
-				else
-				{
-					
-					double walletbalance=trasactionAmount+targetaccount.getWalletAmount();
-					serv.updatewallet(tansactions.getTargetId(),walletbalance);
-					walletbalance=sourceaccount.getBalanceAmount()-trasactionAmount;
-					serv.updatebalance(tansactions.getSourceId(),walletbalance);
-					
-				}
-			}
-			
+			model.addAttribute("msg", "Target Account was no found");
 		}
 		else
 		{
-			if(trasactionAmount>sourceaccount.getWalletAmount())
+			try
 			{
-				return "sendmoney";
-			}
-			else
-			{
-				if(tType.equals("bank"))
+				BankAccounts sourceaccount=serv.getAccount(String.valueOf(sourceId));  // sender account
+				BankAccounts targetaccount=serv.getAccount(String.valueOf(targetId));  // receiver account
+				double trasactionAmount=tansactions.getTransactionAmount();				// transaction amount
+				String sType=tansactions.getSourceType();								// sending type
+				String tType=tansactions.getTargetType();  //to type
+				if(sType.equals("bank"))
 				{
-					double walletbalance=trasactionAmount+targetaccount.getBalanceAmount();
-					serv.updatebalance(tansactions.getTargetId(),walletbalance);
-					walletbalance=sourceaccount.getWalletAmount()-trasactionAmount;
-					serv.updatewallet(tansactions.getSourceId(),walletbalance);
-					
+					if(trasactionAmount>sourceaccount.getBalanceAmount())
+					{
+						return "sendmoney";
+					}
+					else
+					{
+						if(tType.equals("bank"))
+						{
+							double balance=trasactionAmount+targetaccount.getBalanceAmount();
+							serv.updatebalance(tansactions.getTargetId(),balance);
+							balance=sourceaccount.getBalanceAmount()-trasactionAmount;
+							serv.updatebalance(tansactions.getSourceId(),balance);
+							
+							
+						}
+						else
+						{
+							
+							double walletbalance=trasactionAmount+targetaccount.getWalletAmount();
+							serv.updatewallet(tansactions.getTargetId(),walletbalance);
+							walletbalance=sourceaccount.getBalanceAmount()-trasactionAmount;
+							serv.updatebalance(tansactions.getSourceId(),walletbalance);
+							
+						}
+					}
 					
 				}
 				else
 				{
-					double walletbalance=trasactionAmount+targetaccount.getWalletAmount();
-					serv.updatewallet(tansactions.getTargetId(),walletbalance);
-					walletbalance=sourceaccount.getWalletAmount()-trasactionAmount;
-					serv.updatewallet(tansactions.getSourceId(),walletbalance);
-					
+					if(trasactionAmount>sourceaccount.getWalletAmount())
+					{
+						return "sendmoney";
+					}
+					else
+					{
+						if(tType.equals("bank"))
+						{
+							double walletbalance=trasactionAmount+targetaccount.getBalanceAmount();
+							serv.updatebalance(tansactions.getTargetId(),walletbalance);
+							walletbalance=sourceaccount.getWalletAmount()-trasactionAmount;
+							serv.updatewallet(tansactions.getSourceId(),walletbalance);
+							
+							
+						}
+						else
+						{
+							double walletbalance=trasactionAmount+targetaccount.getWalletAmount();
+							serv.updatewallet(tansactions.getTargetId(),walletbalance);
+							walletbalance=sourceaccount.getWalletAmount()-trasactionAmount;
+							serv.updatewallet(tansactions.getSourceId(),walletbalance);
+							
+						}
+					}
 				}
+				
+				
+				LocalDate myObj = LocalDate.now(); 
+				tansactions.setTransactionDate(String.valueOf(myObj));
+				tansactions.setTransactionType("debit");
+				transserv.sendMoney(tansactions);
+				
+				Transactions trans=new Transactions();
+				trans.setTransactionDate(String.valueOf(myObj));
+				trans.setSourceId(targetId);
+				trans.setTargetId(sourceId);
+				
+				trans.setSourceType(tType);
+				trans.setTargetType(sType);
+				trans.setTransactionAmount(trasactionAmount);
+				trans.setTransactionType("credit");
+				transserv.sendMoney(trans);
+				
+				model.addAttribute("msg", "Transsered Successfully");
 			}
+			catch(Exception e)
+			{
+				model.addAttribute("msg",e.getMessage());
+				
+			}
+				
 		}
 		
-		
-		LocalDate myObj = LocalDate.now(); 
-		tansactions.setTransactionDate(String.valueOf(myObj));
-		tansactions.setTransactionType("debit");
-		transserv.sendMoney(tansactions);
-		
-		Transactions trans=new Transactions();
-		trans.setTransactionDate(String.valueOf(myObj));
-		trans.setSourceId(targetId);
-		trans.setTargetId(sourceId);
-		
-		trans.setSourceType(tType);
-		trans.setTargetType(sType);
-		trans.setTransactionAmount(trasactionAmount);
-		trans.setTransactionType("credit");
-		transserv.sendMoney(trans);
+		int id=(int)session.getAttribute("profileid");
+		ArrayList<BankAccounts> accounts=new ArrayList<BankAccounts>();
+		accounts=serv.getAccounts(id);
+		model.addAttribute("bankaccounts",accounts);
 		
 		return "sendmoney";
 		
 		
 		
 		
-//		 private String transactionDate;
-//		  private int sourceId;
-//		  private int targetId;
-//		  private String sourceType;
-//		  private String targetType;
-//		  private double transactionAmount;
-//		  private String transactionType;
+
 	}
 	
 	  @GetMapping("/transactionpage")
@@ -158,7 +183,7 @@ public class MakeTransactionController
 			{
 			System.out.println(tr.getSourceId());
 			}
-			System.out.println(filter.length);
+			//System.out.println(filter.length);
 			return "history";
 	  }
 
