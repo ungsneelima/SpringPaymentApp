@@ -2,6 +2,8 @@ package com.example.SpringPaymentApp.Controller;
 
 
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.SpringPaymentApp.Entity.User;
+import com.example.SpringPaymentApp.Entity.BankAccounts;
 import com.example.SpringPaymentApp.Service.BankService;
 import com.example.SpringPaymentApp.Service.UserService;
 
@@ -22,6 +25,7 @@ public class HomeController {
 	@Autowired
 	UserService serv;
 	
+	@Autowired
 	BankService bankserv;
 
 //    @GetMapping("/index")
@@ -35,15 +39,24 @@ public class HomeController {
     {
     	int id=(int)session.getAttribute("profileid");
     	int updated=serv.update(id,Username,firstname,lastname,email,phno,dob,address);
+    	
+    	User user=serv.getProfile(id);
+    	model.addAttribute("userName",user.getUserName());
+    	model.addAttribute("firstName",user.getFirstName());
+    	model.addAttribute("lastName",user.getLastName());
+    	model.addAttribute("email",user.getEmail());
+    	model.addAttribute("phoneNum",user.getPhoneNum());
+    	model.addAttribute("dob",user.getDob());
+    	model.addAttribute("address",user.getAddress());
     	if(updated>0)
     	{
-    		model.addAttribute("output","Updated successfully");
-    		return "index";
+    		model.addAttribute("msg","Updated successfully");
+    		return "profile";
     	}
     	else
     	{
-    		model.addAttribute("output","Updated unsuccessfully");
-    		return "index";
+    		model.addAttribute("msg","Updated unsuccessfully");
+    		return "profile";
     	}
     	
     }
@@ -69,7 +82,7 @@ public class HomeController {
     {
     	int id=(int)session.getAttribute("profileid");
     	int delete=serv.deleteProfile(id);
-    	model.addAttribute("error","Profile Deleted Successfully");
+    	model.addAttribute("msg","Profile Deleted Successfully");
     	session.invalidate();
     	return "login";
     }
@@ -84,10 +97,27 @@ public class HomeController {
         return "bankStatement";  // Renders statement.jsp
     }
 
-    @GetMapping("/logout")
-    public String logoutPage() {
-        return "logout";  // Renders logout.jsp
+  
+
+    @GetMapping("/addmoney")
+    public String addMoney(HttpSession session,Model model) {
+    	
+    	int id=(int)session.getAttribute("profileid");
+		ArrayList<BankAccounts> accounts=new ArrayList<BankAccounts>();
+		accounts=bankserv.getAccounts(id);
+		model.addAttribute("bankaccounts",accounts);
+        return "addmoney";  // Renders logout.jsp
     }
+    
+  
+    
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+    	
+    	session.invalidate();
+        return "login";  // Renders logout.jsp
+    }
+    
     
   
     

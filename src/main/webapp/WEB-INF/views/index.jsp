@@ -51,55 +51,61 @@
 
         .form-container {
             display: none;
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            padding: 25px;
-            width: 400px;
-            border-radius: 10px;
+            margin-top: 30px;
+            padding: 30px;
+            width: 320px;
+            border-radius: 20px;
             background-color: #ffffff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
             position: absolute;
-            left: 500px;
-            top: 130px;
+            left: 50%;
+            top: 140px;
+            transform: translateX(-50%);
+            text-align: center;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            text-align: left;
         }
 
         .form-group label {
-            display: block;
-            font-weight: bold;
+            font-weight: 600;
+            color: #333;
             margin-bottom: 6px;
-            color: #2c3e50;
+            display: block;
         }
 
         .form-group input, .form-group select {
             width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            transition: border-color 0.3s;
+            padding: 10px 12px;
+            border: 1px solid #dcdcdc;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            transition: 0.3s;
         }
 
         .form-group input:focus, .form-group select:focus {
-            border-color: #007bff;
+            border-color: #7a5cf0;
+            background-color: #fff;
             outline: none;
         }
 
         button {
-            padding: 10px 20px;
-            background-color: #007bff;
+            padding: 12px 24px;
+            background-color: #7a5cf0;
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 15px;
             transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #6244d4;
         }
 
         .btn-container {
